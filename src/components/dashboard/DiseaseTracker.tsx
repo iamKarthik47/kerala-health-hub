@@ -3,7 +3,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { AlertOctagon, ArrowRight, TrendingUp, TrendingDown } from 'lucide-react';
 
-interface DiseaseData {
+export interface DiseaseData {
   name: string;
   cases: number;
   trend: number;

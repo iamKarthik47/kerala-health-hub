@@ -1,6 +1,6 @@
 
 import React, { useEffect } from 'react';
-import { Activity, ChevronRight, Map, BarChart3 } from 'lucide-react';
+import { Activity, ChevronRight, Map, BarChart3, Building } from 'lucide-react';
 import { motion } from 'framer-motion';
 import PageTransition from '../components/transitions/PageTransition';
 import Header from '../components/layout/Header';
@@ -95,7 +95,6 @@ const Dashboard: React.FC = () => {
                 icon={stat.icon}
                 description={stat.description}
                 trend={stat.trend}
-                prefix={stat.prefix}
                 suffix={stat.suffix}
                 color={stat.color}
                 delay={0.1 + (index * 0.1)}
@@ -167,21 +166,29 @@ const Dashboard: React.FC = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {hospitalData.map((hospital, index) => (
-              <HospitalCard
-                key={hospital.id}
-                name={hospital.name}
-                type={hospital.type}
-                location={hospital.location}
-                district={hospital.district}
-                bedCapacity={hospital.bedCapacity}
-                availableBeds={hospital.availableBeds}
-                occupancyRate={hospital.occupancyRate}
-                patientCount={hospital.patientCount}
-                status={hospital.status}
-                delay={0.1 + (index * 0.1)}
-              />
-            ))}
+            {hospitalData.map((hospital, index) => {
+              // Ensure the status is of the correct type
+              const validStatus: "operational" | "partial" | "critical" = 
+                (hospital.status === "operational" || hospital.status === "partial" || hospital.status === "critical") 
+                  ? hospital.status 
+                  : "operational";
+                  
+              return (
+                <HospitalCard
+                  key={hospital.id}
+                  name={hospital.name}
+                  type={hospital.type}
+                  location={hospital.location}
+                  district={hospital.district}
+                  bedCapacity={hospital.bedCapacity}
+                  availableBeds={hospital.availableBeds}
+                  occupancyRate={hospital.occupancyRate}
+                  patientCount={hospital.patientCount}
+                  status={validStatus}
+                  delay={0.1 + (index * 0.1)}
+                />
+              );
+            })}
           </div>
         </div>
       </section>
@@ -199,7 +206,14 @@ const Dashboard: React.FC = () => {
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <DiseaseTracker 
-              diseases={diseaseData}
+              diseases={diseaseData.map(disease => ({
+                ...disease,
+                // Ensure severity is of the correct type
+                severity: (disease.severity === "low" || disease.severity === "medium" || 
+                           disease.severity === "high" || disease.severity === "critical") 
+                  ? disease.severity 
+                  : "medium" as "low" | "medium" | "high" | "critical"
+              }))}
               delay={0.2}
             />
             <ResourceMonitor 

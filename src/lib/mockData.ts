@@ -68,7 +68,7 @@ const mockData = {
       availableBeds: 240,
       occupancyRate: 80,
       patientCount: 960,
-      status: 'operational'
+      status: 'operational' as 'operational' | 'partial' | 'critical'
     },
     {
       id: 2,
@@ -80,7 +80,7 @@ const mockData = {
       availableBeds: 93,
       occupancyRate: 89,
       patientCount: 757,
-      status: 'partial'
+      status: 'partial' as 'operational' | 'partial' | 'critical'
     },
     {
       id: 3,
@@ -92,7 +92,7 @@ const mockData = {
       availableBeds: 182,
       occupancyRate: 72,
       patientCount: 468,
-      status: 'operational'
+      status: 'operational' as 'operational' | 'partial' | 'critical'
     },
     {
       id: 4,
@@ -104,7 +104,7 @@ const mockData = {
       availableBeds: 36,
       occupancyRate: 95,
       patientCount: 684,
-      status: 'critical'
+      status: 'critical' as 'operational' | 'partial' | 'critical'
     }
   ],
   
@@ -113,35 +113,35 @@ const mockData = {
       name: 'Dengue Fever',
       cases: 824,
       trend: 12,
-      severity: 'high',
+      severity: 'high' as 'low' | 'medium' | 'high' | 'critical',
       location: 'Thrissur'
     },
     {
       name: 'COVID-19',
       cases: 1267,
       trend: -8,
-      severity: 'medium',
+      severity: 'medium' as 'low' | 'medium' | 'high' | 'critical',
       location: 'Statewide'
     },
     {
       name: 'Leptospirosis',
       cases: 378,
       trend: 4,
-      severity: 'medium',
+      severity: 'medium' as 'low' | 'medium' | 'high' | 'critical',
       location: 'Alappuzha'
     },
     {
       name: 'H1N1 Influenza',
       cases: 156,
       trend: -2,
-      severity: 'low',
+      severity: 'low' as 'low' | 'medium' | 'high' | 'critical',
       location: 'Kozhikode'
     },
     {
       name: 'Cholera',
       cases: 42,
       trend: 15,
-      severity: 'critical',
+      severity: 'critical' as 'low' | 'medium' | 'high' | 'critical',
       location: 'Malappuram'
     }
   ],

@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { MenuIcon, X, Search, Bell } from 'lucide-react';
+import { MenuIcon, X, Search, Bell, Building } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Header: React.FC = () => {
@@ -46,7 +46,7 @@ const Header: React.FC = () => {
           {['Dashboard', 'Hospitals', 'Diseases', 'Resources', 'Reports'].map((item, i) => (
             <motion.div
               key={item}
-              initial={{ opacity: a0, y: -20 }}
+              initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: i * 0.1 }}
             >
