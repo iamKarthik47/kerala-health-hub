@@ -5,7 +5,7 @@ import HospitalCard from './HospitalCard';
 import { Link } from 'react-router-dom';
 
 interface HospitalData {
-  id: string;
+  id: number; // Changed from string to number to match the actual data
   name: string;
   type: string;
   location: string;
@@ -14,7 +14,7 @@ interface HospitalData {
   availableBeds: number;
   occupancyRate: number;
   patientCount: number;
-  status: string;
+  status: "operational" | "partial" | "critical";
 }
 
 interface HospitalsSectionProps {
