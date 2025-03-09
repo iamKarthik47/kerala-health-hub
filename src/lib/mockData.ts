@@ -105,6 +105,102 @@ const mockData = {
       occupancyRate: 95,
       patientCount: 684,
       status: 'critical' as 'operational' | 'partial' | 'critical'
+    },
+    {
+      id: 5,
+      name: 'Kollam District Hospital',
+      type: 'District Hospital',
+      location: 'Kollam',
+      district: 'Kollam',
+      bedCapacity: 550,
+      availableBeds: 125,
+      occupancyRate: 77,
+      patientCount: 425,
+      status: 'operational' as 'operational' | 'partial' | 'critical'
+    },
+    {
+      id: 6,
+      name: 'Palakkad General Hospital',
+      type: 'District Hospital',
+      location: 'Palakkad',
+      district: 'Palakkad',
+      bedCapacity: 480,
+      availableBeds: 68,
+      occupancyRate: 86,
+      patientCount: 412,
+      status: 'partial' as 'operational' | 'partial' | 'critical'
+    },
+    {
+      id: 7,
+      name: 'Alappuzha Medical College',
+      type: 'Medical College',
+      location: 'Alappuzha',
+      district: 'Alappuzha',
+      bedCapacity: 980,
+      availableBeds: 210,
+      occupancyRate: 79,
+      patientCount: 770,
+      status: 'operational' as 'operational' | 'partial' | 'critical'
+    },
+    {
+      id: 8,
+      name: 'Kottayam Community Hospital',
+      type: 'Community Hospital',
+      location: 'Kottayam',
+      district: 'Kottayam',
+      bedCapacity: 420,
+      availableBeds: 15,
+      occupancyRate: 96,
+      patientCount: 405,
+      status: 'critical' as 'operational' | 'partial' | 'critical'
+    },
+    {
+      id: 9,
+      name: 'Wayanad District Hospital',
+      type: 'District Hospital',
+      location: 'Wayanad',
+      district: 'Wayanad',
+      bedCapacity: 320,
+      availableBeds: 128,
+      occupancyRate: 60,
+      patientCount: 192,
+      status: 'operational' as 'operational' | 'partial' | 'critical'
+    },
+    {
+      id: 10,
+      name: 'Idukki Specialty Care Center',
+      type: 'Specialty Hospital',
+      location: 'Idukki',
+      district: 'Idukki',
+      bedCapacity: 380,
+      availableBeds: 112,
+      occupancyRate: 71,
+      patientCount: 268,
+      status: 'operational' as 'operational' | 'partial' | 'critical'
+    },
+    {
+      id: 11,
+      name: 'Pathanamthitta General Hospital',
+      type: 'District Hospital',
+      location: 'Pathanamthitta',
+      district: 'Pathanamthitta',
+      bedCapacity: 410,
+      availableBeds: 82,
+      occupancyRate: 80,
+      patientCount: 328,
+      status: 'operational' as 'operational' | 'partial' | 'critical'
+    },
+    {
+      id: 12,
+      name: 'Malappuram Medical Center',
+      type: 'Specialty Hospital',
+      location: 'Malappuram',
+      district: 'Malappuram',
+      bedCapacity: 520,
+      availableBeds: 26,
+      occupancyRate: 95,
+      patientCount: 494,
+      status: 'critical' as 'operational' | 'partial' | 'critical'
     }
   ],
   
