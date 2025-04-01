@@ -61,10 +61,10 @@ const Header: React.FC = () => {
                 Hospitals
               </Button>
             </Link>
-            <Link to="#districts">
+            <Link to="/districts">
               <Button 
                 variant="ghost" 
-                className="gap-1.5 text-base text-gray-600 hover:text-gray-900"
+                className={`gap-1.5 text-base ${isActive('/districts') ? 'bg-health-50 text-health-900' : 'text-gray-600 hover:text-gray-900'}`}
               >
                 <Map className="size-4" />
                 Districts
@@ -113,10 +113,10 @@ const Header: React.FC = () => {
                 Hospitals
               </Button>
             </Link>
-            <Link to="#districts" onClick={() => setIsMenuOpen(false)}>
+            <Link to="/districts" onClick={() => setIsMenuOpen(false)}>
               <Button 
                 variant="ghost" 
-                className="w-full justify-start gap-1.5 text-base text-gray-600"
+                className={`w-full justify-start gap-1.5 text-base ${isActive('/districts') ? 'bg-health-50 text-health-900' : 'text-gray-600'}`}
               >
                 <Map className="size-4" />
                 Districts

@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import Index from "./pages/Index";
 import Hospitals from "./pages/Hospitals";
+import Districts from "./pages/Districts";
 import NotFound from "./pages/NotFound";
 import { HealthDataProvider } from "./context/HealthDataContext";
 
@@ -23,6 +24,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/hospitals" element={<Hospitals />} />
+              <Route path="/districts" element={<Districts />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
