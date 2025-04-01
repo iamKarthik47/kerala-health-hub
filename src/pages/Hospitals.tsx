@@ -1,5 +1,6 @@
+
 import React, { useState, useMemo } from 'react';
-import { Building, MapPin, Filter, Grid3X3, List, Search } from 'lucide-react';
+import { Building, MapPin, Filter, Grid3X3, List, Search, Map } from 'lucide-react';
 import { motion } from 'framer-motion';
 import PageTransition from '../components/transitions/PageTransition';
 import Header from '../components/layout/Header';
@@ -9,12 +10,13 @@ import { useHealthData } from '../context/HealthDataContext';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import DistrictDetails from '../components/districts/DistrictDetails';
 
 type ViewMode = 'grid' | 'list';
 type HospitalType = 'all' | 'Medical College' | 'District Hospital' | 'Community Hospital' | 'Specialty Hospital';
 
 const Hospitals: React.FC = () => {
-  const { loading, hospitalData } = useHealthData();
+  const { loading, hospitalData, districtData } = useHealthData();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDistrict, setSelectedDistrict] = useState<string>('all');
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
@@ -136,6 +138,7 @@ const Hospitals: React.FC = () => {
                 <TabsList className="mb-6">
                   <TabsTrigger value="districts">By District</TabsTrigger>
                   <TabsTrigger value="types">By Type</TabsTrigger>
+                  <TabsTrigger value="districtsDetails">Districts Details</TabsTrigger>
                 </TabsList>
                 
                 <TabsContent value="districts" className="space-y-6">
@@ -234,6 +237,10 @@ const Hospitals: React.FC = () => {
                       <p className="text-gray-500 mt-2">Try adjusting your search or filters</p>
                     </div>
                   )}
+                </TabsContent>
+                
+                <TabsContent value="districtsDetails" className="space-y-6">
+                  <DistrictDetails districtData={districtData} hospitalData={hospitalData} />
                 </TabsContent>
               </Tabs>
             </div>

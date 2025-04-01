@@ -15,7 +15,7 @@ import HospitalsSection from './HospitalsSection';
 import MonitoringSection from './MonitoringSection';
 
 const Dashboard: React.FC = () => {
-  const { loading, statistics, patientData, hospitalData, diseaseData, resourceData } = useHealthData();
+  const { loading, statistics, patientData, hospitalData, diseaseData, resourceData, districtData } = useHealthData();
 
   if (loading) {
     return (
@@ -35,7 +35,7 @@ const Dashboard: React.FC = () => {
       <DashboardHero />
       <StatisticsSection statistics={statistics} />
       <ChartsSection patientData={patientData} />
-      <HospitalsSection hospitalData={hospitalData} />
+      <HospitalsSection hospitalData={hospitalData} districtData={districtData} />
       <MonitoringSection diseaseData={diseaseData} resourceData={resourceData} />
     </div>
   );
