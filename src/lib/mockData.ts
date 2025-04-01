@@ -68,7 +68,13 @@ const mockData = {
       availableBeds: 240,
       occupancyRate: 80,
       patientCount: 960,
-      status: 'operational' as 'operational' | 'partial' | 'critical'
+      status: 'operational' as 'operational' | 'partial' | 'critical',
+      doctors: 350,
+      availableDoctors: 42,
+      staff: 780,
+      availableStaff: 120,
+      facilities: ['ICU', 'Emergency', 'Surgery', 'Radiology', 'Laboratory', 'Pharmacy'],
+      specialties: ['Cardiology', 'Neurology', 'Orthopedics', 'Pediatrics', 'Oncology']
     },
     {
       id: 2,
@@ -80,7 +86,13 @@ const mockData = {
       availableBeds: 93,
       occupancyRate: 89,
       patientCount: 757,
-      status: 'partial' as 'operational' | 'partial' | 'critical'
+      status: 'partial' as 'operational' | 'partial' | 'critical',
+      doctors: 210,
+      availableDoctors: 18,
+      staff: 520,
+      availableStaff: 65,
+      facilities: ['ICU', 'Emergency', 'Surgery', 'Radiology', 'Laboratory'],
+      specialties: ['General Medicine', 'Obstetrics', 'ENT', 'Ophthalmology']
     },
     {
       id: 3,
@@ -92,7 +104,13 @@ const mockData = {
       availableBeds: 182,
       occupancyRate: 72,
       patientCount: 468,
-      status: 'operational' as 'operational' | 'partial' | 'critical'
+      status: 'operational' as 'operational' | 'partial' | 'critical',
+      doctors: 150,
+      availableDoctors: 32,
+      staff: 390,
+      availableStaff: 76,
+      facilities: ['Emergency', 'Laboratory', 'Pharmacy', 'Physiotherapy'],
+      specialties: ['Family Medicine', 'Pediatrics', 'Geriatrics']
     },
     {
       id: 4,
@@ -104,7 +122,13 @@ const mockData = {
       availableBeds: 36,
       occupancyRate: 95,
       patientCount: 684,
-      status: 'critical' as 'operational' | 'partial' | 'critical'
+      status: 'critical' as 'operational' | 'partial' | 'critical',
+      doctors: 180,
+      availableDoctors: 8,
+      staff: 420,
+      availableStaff: 25,
+      facilities: ['ICU', 'Emergency', 'Surgery', 'Radiology', 'Dialysis'],
+      specialties: ['Cardiology', 'Nephrology', 'Urology', 'Endocrinology']
     },
     {
       id: 5,
@@ -116,7 +140,13 @@ const mockData = {
       availableBeds: 125,
       occupancyRate: 77,
       patientCount: 425,
-      status: 'operational' as 'operational' | 'partial' | 'critical'
+      status: 'operational' as 'operational' | 'partial' | 'critical',
+      doctors: 140,
+      availableDoctors: 28,
+      staff: 320,
+      availableStaff: 45,
+      facilities: ['Emergency', 'Surgery', 'Laboratory', 'Pharmacy'],
+      specialties: ['General Medicine', 'Orthopedics', 'Gynecology']
     },
     {
       id: 6,
@@ -128,7 +158,13 @@ const mockData = {
       availableBeds: 68,
       occupancyRate: 86,
       patientCount: 412,
-      status: 'partial' as 'operational' | 'partial' | 'critical'
+      status: 'partial' as 'operational' | 'partial' | 'critical',
+      doctors: 120,
+      availableDoctors: 15,
+      staff: 280,
+      availableStaff: 32,
+      facilities: ['Emergency', 'Laboratory', 'Pharmacy', 'Radiology'],
+      specialties: ['General Surgery', 'Pediatrics', 'Dermatology']
     },
     {
       id: 7,
@@ -140,7 +176,13 @@ const mockData = {
       availableBeds: 210,
       occupancyRate: 79,
       patientCount: 770,
-      status: 'operational' as 'operational' | 'partial' | 'critical'
+      status: 'operational' as 'operational' | 'partial' | 'critical',
+      doctors: 290,
+      availableDoctors: 35,
+      staff: 680,
+      availableStaff: 90,
+      facilities: ['ICU', 'Emergency', 'Surgery', 'Radiology', 'Laboratory', 'Blood Bank'],
+      specialties: ['Neurosurgery', 'Cardiology', 'Oncology', 'Psychiatry', 'Rheumatology']
     },
     {
       id: 8,
@@ -152,7 +194,13 @@ const mockData = {
       availableBeds: 15,
       occupancyRate: 96,
       patientCount: 405,
-      status: 'critical' as 'operational' | 'partial' | 'critical'
+      status: 'critical' as 'operational' | 'partial' | 'critical',
+      doctors: 110,
+      availableDoctors: 5,
+      staff: 270,
+      availableStaff: 22,
+      facilities: ['Emergency', 'Laboratory', 'Pharmacy', 'Physiotherapy'],
+      specialties: ['General Medicine', 'Pediatrics', 'Geriatrics']
     },
     {
       id: 9,
@@ -164,7 +212,13 @@ const mockData = {
       availableBeds: 128,
       occupancyRate: 60,
       patientCount: 192,
-      status: 'operational' as 'operational' | 'partial' | 'critical'
+      status: 'operational' as 'operational' | 'partial' | 'critical',
+      doctors: 85,
+      availableDoctors: 25,
+      staff: 190,
+      availableStaff: 40,
+      facilities: ['Emergency', 'Laboratory', 'Pharmacy'],
+      specialties: ['General Medicine', 'Pediatrics', 'Orthopedics']
     },
     {
       id: 10,
@@ -176,7 +230,13 @@ const mockData = {
       availableBeds: 112,
       occupancyRate: 71,
       patientCount: 268,
-      status: 'operational' as 'operational' | 'partial' | 'critical'
+      status: 'operational' as 'operational' | 'partial' | 'critical',
+      doctors: 95,
+      availableDoctors: 22,
+      staff: 210,
+      availableStaff: 38,
+      facilities: ['ICU', 'Laboratory', 'Radiology', 'Physiotherapy'],
+      specialties: ['Pulmonology', 'Dermatology', 'Psychiatry']
     },
     {
       id: 11,
@@ -188,7 +248,13 @@ const mockData = {
       availableBeds: 82,
       occupancyRate: 80,
       patientCount: 328,
-      status: 'operational' as 'operational' | 'partial' | 'critical'
+      status: 'operational' as 'operational' | 'partial' | 'critical',
+      doctors: 110,
+      availableDoctors: 18,
+      staff: 240,
+      availableStaff: 35,
+      facilities: ['Emergency', 'Laboratory', 'Pharmacy', 'Radiology'],
+      specialties: ['General Medicine', 'Orthopedics', 'ENT']
     },
     {
       id: 12,
@@ -200,7 +266,13 @@ const mockData = {
       availableBeds: 26,
       occupancyRate: 95,
       patientCount: 494,
-      status: 'critical' as 'operational' | 'partial' | 'critical'
+      status: 'critical' as 'operational' | 'partial' | 'critical',
+      doctors: 140,
+      availableDoctors: 7,
+      staff: 320,
+      availableStaff: 18,
+      facilities: ['ICU', 'Emergency', 'Surgery', 'Dialysis', 'Laboratory'],
+      specialties: ['Nephrology', 'Cardiology', 'Endocrinology', 'Gastroenterology']
     }
   ],
   

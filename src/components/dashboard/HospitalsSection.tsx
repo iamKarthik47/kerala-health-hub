@@ -5,7 +5,7 @@ import HospitalCard from './HospitalCard';
 import { Link } from 'react-router-dom';
 
 interface HospitalData {
-  id: number; // Changed from string to number to match the actual data
+  id: number;
   name: string;
   type: string;
   location: string;
@@ -15,6 +15,12 @@ interface HospitalData {
   occupancyRate: number;
   patientCount: number;
   status: "operational" | "partial" | "critical";
+  doctors: number;
+  availableDoctors: number;
+  staff: number;
+  availableStaff: number;
+  facilities: string[];
+  specialties: string[];
 }
 
 interface HospitalsSectionProps {
@@ -60,6 +66,12 @@ const HospitalsSection: React.FC<HospitalsSectionProps> = ({ hospitalData }) => 
                 patientCount={hospital.patientCount}
                 status={validStatus}
                 delay={0.1 + (index * 0.1)}
+                doctors={hospital.doctors || 0}
+                availableDoctors={hospital.availableDoctors || 0}
+                staff={hospital.staff || 0}
+                availableStaff={hospital.availableStaff || 0}
+                facilities={hospital.facilities || []}
+                specialties={hospital.specialties || []}
               />
             );
           })}

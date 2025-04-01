@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { Building, MapPin, Filter, Grid3X3, List, Search } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -21,7 +20,6 @@ const Hospitals: React.FC = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [hospitalType, setHospitalType] = useState<HospitalType>('all');
 
-  // Get unique districts from hospital data
   const districts = useMemo(() => {
     const uniqueDistricts = Array.from(
       new Set(hospitalData.map((hospital) => hospital.district))
@@ -29,7 +27,6 @@ const Hospitals: React.FC = () => {
     return ['all', ...uniqueDistricts];
   }, [hospitalData]);
 
-  // Filter hospitals based on search, district and type
   const filteredHospitals = useMemo(() => {
     return hospitalData.filter((hospital) => {
       const matchesSearch = hospital.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -60,7 +57,6 @@ const Hospitals: React.FC = () => {
         <Header />
         
         <main className="pb-16">
-          {/* Hero Section */}
           <section className="pt-32 pb-16 px-6 md:px-10 bg-gradient-to-b from-health-50 to-white relative overflow-hidden">
             <div className="max-w-7xl mx-auto">
               <div className="relative z-10">
@@ -94,7 +90,6 @@ const Hospitals: React.FC = () => {
             </div>
           </section>
           
-          {/* Filtering Section */}
           <section className="px-6 md:px-10 py-6 border-b border-gray-100">
             <div className="max-w-7xl mx-auto">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -135,7 +130,6 @@ const Hospitals: React.FC = () => {
             </div>
           </section>
           
-          {/* Tabs for categorization */}
           <section className="px-6 md:px-10 py-6">
             <div className="max-w-7xl mx-auto">
               <Tabs defaultValue="districts" className="w-full">
@@ -174,6 +168,12 @@ const Hospitals: React.FC = () => {
                         occupancyRate={hospital.occupancyRate}
                         patientCount={hospital.patientCount}
                         status={hospital.status}
+                        doctors={hospital.doctors}
+                        availableDoctors={hospital.availableDoctors}
+                        staff={hospital.staff}
+                        availableStaff={hospital.availableStaff}
+                        facilities={hospital.facilities}
+                        specialties={hospital.specialties}
                       />
                     ))}
                   </div>
@@ -217,6 +217,12 @@ const Hospitals: React.FC = () => {
                         occupancyRate={hospital.occupancyRate}
                         patientCount={hospital.patientCount}
                         status={hospital.status}
+                        doctors={hospital.doctors}
+                        availableDoctors={hospital.availableDoctors}
+                        staff={hospital.staff}
+                        availableStaff={hospital.availableStaff}
+                        facilities={hospital.facilities}
+                        specialties={hospital.specialties}
                       />
                     ))}
                   </div>
@@ -233,7 +239,6 @@ const Hospitals: React.FC = () => {
             </div>
           </section>
           
-          {/* Stats Summary */}
           <section className="px-6 md:px-10 py-8 bg-gray-50">
             <div className="max-w-7xl mx-auto">
               <div className="text-center mb-8">
