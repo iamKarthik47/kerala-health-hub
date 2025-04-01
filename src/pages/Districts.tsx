@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import DistrictDetails from '../components/districts/DistrictDetails';
+import DistrictCharts from '../components/districts/DistrictCharts';
 
 const Districts: React.FC = () => {
   const { loading, districtData, hospitalData } = useHealthData();
@@ -97,6 +98,7 @@ const Districts: React.FC = () => {
                   <TabsTrigger value="overview">District Overview</TabsTrigger>
                   <TabsTrigger value="details">Detailed Analysis</TabsTrigger>
                   <TabsTrigger value="comparison">District Comparison</TabsTrigger>
+                  <TabsTrigger value="charts">Visual Analytics</TabsTrigger>
                 </TabsList>
                 
                 <TabsContent value="overview" className="space-y-6">
@@ -243,6 +245,11 @@ const Districts: React.FC = () => {
                       </table>
                     </div>
                   </div>
+                </TabsContent>
+
+                {/* New Charts Tab */}
+                <TabsContent value="charts" className="space-y-6">
+                  <DistrictCharts districtData={filteredDistricts} hospitalData={hospitalData} />
                 </TabsContent>
               </Tabs>
             </div>
