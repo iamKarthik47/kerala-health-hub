@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { 
   FileText, Download, ChevronLeft, ChevronRight, 
@@ -9,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { downloadPDF } from '@/utils/reportUtils';
+import { toast } from "@/components/ui/use-toast";
 import ReportVisualization3D from './ReportVisualization3D';
 
 interface ReportData {
@@ -27,11 +27,37 @@ interface ReportViewerProps {
 
 const ReportViewer: React.FC<ReportViewerProps> = ({ isOpen, onClose, report }) => {
   const [activeTab, setActiveTab] = useState<string>("overview");
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   
   if (!report) return null;
   
-  const handleDownloadPDF = () => {
-    downloadPDF('report-to-download', `${report.title.replace(/\s+/g, '_')}_report`);
+  const handleDownloadPDF = async () => {
+    try {
+      setIsGeneratingPDF(true);
+      toast({
+        title: "Preparing report for download",
+        description: "Please wait while we generate your PDF..."
+      });
+      
+      // Small delay to ensure the toast is shown
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      await downloadPDF('report-to-download', `${report.title.replace(/\s+/g, '_')}_report`);
+      
+      toast({
+        title: "Report downloaded",
+        description: "Your PDF has been successfully generated and downloaded."
+      });
+    } catch (error) {
+      console.error("Error downloading report:", error);
+      toast({
+        title: "Download failed",
+        description: "There was an issue generating your PDF report. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsGeneratingPDF(false);
+    }
   };
 
   const printReport = () => {
@@ -69,9 +95,14 @@ const ReportViewer: React.FC<ReportViewerProps> = ({ isOpen, onClose, report }) 
                 <Printer className="h-4 w-4 mr-1" />
                 Print
               </Button>
-              <Button variant="outline" size="sm" onClick={handleDownloadPDF}>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleDownloadPDF}
+                disabled={isGeneratingPDF}
+              >
                 <File className="h-4 w-4 mr-1" />
-                PDF
+                {isGeneratingPDF ? "Generating..." : "PDF"}
               </Button>
               <Button variant="ghost" size="sm" onClick={onClose}>
                 <Eye className="h-4 w-4 mr-1" />
@@ -85,7 +116,15 @@ const ReportViewer: React.FC<ReportViewerProps> = ({ isOpen, onClose, report }) 
           </div>
         </DialogHeader>
         
-        <div id="report-to-download" className="p-2">
+        <div id="report-to-download" className="p-2 bg-white">
+          {/* Title section that will appear in the PDF */}
+          <div className="print-only mb-6 pdf-header">
+            <h1 className="text-2xl font-bold">{report.title}</h1>
+            <p className="text-gray-500">{report.subtitle}</p>
+            <p className="text-gray-500">Generated on: {report.date}</p>
+            <div className="h-1 bg-health-500 w-1/4 mt-2"></div>
+          </div>
+          
           <Tabs defaultValue="overview" value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="mb-4">
               <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -345,9 +384,12 @@ const ReportViewer: React.FC<ReportViewerProps> = ({ isOpen, onClose, report }) 
               }}>
                 Next Section
               </Button>
-              <Button onClick={handleDownloadPDF}>
+              <Button 
+                onClick={handleDownloadPDF} 
+                disabled={isGeneratingPDF}
+              >
                 <Download className="h-4 w-4 mr-1" />
-                Download Report
+                {isGeneratingPDF ? "Generating..." : "Download Report"}
               </Button>
             </div>
             <Button variant="ghost" size="sm">

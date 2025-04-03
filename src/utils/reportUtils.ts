@@ -44,24 +44,84 @@ export const generateReportData = (districtName: string, districtData: any, hosp
 
 export const downloadPDF = async (elementId: string, filename: string): Promise<void> => {
   const element = document.getElementById(elementId);
-  if (!element) return;
+  if (!element) {
+    console.error("Element not found for PDF generation");
+    return;
+  }
 
-  const canvas = await html2canvas(element, {
-    scale: 2,
-    logging: false,
-    useCORS: true,
-  });
-  
-  const imgData = canvas.toDataURL('image/png');
-  const pdf = new jsPDF({
-    orientation: 'portrait',
-    unit: 'mm',
-    format: 'a4',
-  });
-  
-  const imgWidth = 210;
-  const imgHeight = canvas.height * imgWidth / canvas.width;
-  
-  pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-  pdf.save(`${filename}.pdf`);
+  try {
+    // Ensure all tabs content is visible before capturing
+    const tabContents = element.querySelectorAll('[role="tabpanel"]');
+    const originalDisplays: string[] = [];
+    
+    // Save original display styles and make all tabs visible
+    tabContents.forEach((tab: Element) => {
+      const tabElement = tab as HTMLElement;
+      originalDisplays.push(tabElement.style.display);
+      tabElement.style.display = 'block';
+    });
+    
+    // Wait a moment for the DOM to update
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    // Capture the element with improved settings
+    const canvas = await html2canvas(element, {
+      scale: 2, // Higher resolution
+      useCORS: true,
+      logging: true,
+      allowTaint: true,
+      backgroundColor: '#ffffff',
+      windowWidth: 1200, // Standardize width
+      onclone: (clonedDoc) => {
+        // Ensure 3D visualizations are properly rendered in the cloned document
+        const clonedElement = clonedDoc.getElementById(elementId);
+        if (clonedElement) {
+          clonedElement.style.width = '1200px';
+          clonedElement.style.height = 'auto';
+        }
+      }
+    });
+    
+    // Create PDF with proper dimensions
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4',
+    });
+    
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+    
+    // Add the image to the PDF
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    
+    // Add additional pages if content exceeds one page
+    if (pdfHeight > pdf.internal.pageSize.getHeight()) {
+      let remainingHeight = pdfHeight;
+      let currentPosition = -pdf.internal.pageSize.getHeight();
+      
+      while (remainingHeight > 0) {
+        pdf.addPage();
+        pdf.addImage(
+          imgData, 'PNG', 
+          0, currentPosition, 
+          pdfWidth, pdfHeight
+        );
+        remainingHeight -= pdf.internal.pageSize.getHeight();
+        currentPosition -= pdf.internal.pageSize.getHeight();
+      }
+    }
+    
+    // Restore original display styles
+    tabContents.forEach((tab: Element, index: number) => {
+      const tabElement = tab as HTMLElement;
+      tabElement.style.display = originalDisplays[index];
+    });
+    
+    // Save the PDF
+    pdf.save(`${filename}.pdf`);
+  } catch (error) {
+    console.error("Error generating PDF:", error);
+  }
 };
