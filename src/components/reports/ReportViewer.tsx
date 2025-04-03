@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { 
   FileText, Download, ChevronLeft, ChevronRight, 
@@ -8,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { downloadPDF } from '@/utils/reportUtils';
+import ReportVisualization3D from './ReportVisualization3D';
 
 interface ReportData {
   title: string;
@@ -34,6 +36,26 @@ const ReportViewer: React.FC<ReportViewerProps> = ({ isOpen, onClose, report }) 
 
   const printReport = () => {
     window.print();
+  };
+
+  // Function to prepare 3D visualization data
+  const prepare3DData = () => {
+    if (report.type === "State") {
+      return report.data.districtVisualizationData || {
+        cases: [],
+        recovered: [],
+        active: [],
+        labels: []
+      };
+    }
+    
+    // For district reports, use a simpler format
+    return {
+      cases: [report.data.cases],
+      recovered: [report.data.recovered],
+      active: [report.data.active],
+      labels: [report.title.split(' ')[0]] // First word of the title (district name)
+    };
   };
   
   return (
@@ -69,13 +91,14 @@ const ReportViewer: React.FC<ReportViewerProps> = ({ isOpen, onClose, report }) 
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="details">Detailed Data</TabsTrigger>
               <TabsTrigger value="charts">Visual Analytics</TabsTrigger>
+              <TabsTrigger value="3d">3D Visualization</TabsTrigger>
             </TabsList>
             
             <TabsContent value="overview" className="space-y-4">
               <div className="bg-gray-50 p-6 rounded-lg border border-gray-100">
                 <h3 className="text-lg font-medium text-gray-900 mb-4">Executive Summary</h3>
                 <p className="text-gray-700">
-                  This report provides a comprehensive analysis of health metrics for {report.title}.
+                  This report provides a comprehensive analysis of health metrics for {report.title.includes("State") ? "Kerala State" : report.title.split(' ')[0]}.
                   It includes data on cases, recoveries, hospital infrastructure, and healthcare personnel.
                 </p>
                 
@@ -133,10 +156,11 @@ const ReportViewer: React.FC<ReportViewerProps> = ({ isOpen, onClose, report }) 
               <div className="bg-gray-50 p-6 rounded-lg border border-gray-100">
                 <h3 className="text-lg font-medium text-gray-900 mb-4">Summary Analysis</h3>
                 <p className="text-gray-700 mb-4">
-                  Based on the current health metrics and infrastructure data, {report.title} shows 
+                  Based on the current health metrics and infrastructure data, 
+                  {report.title.includes("State") ? " Kerala State" : " " + report.title.split(' ')[0]}
                   {" " + (((report.data.recovered / report.data.cases) * 100) > 85 ? 
-                    "a positive trend in recovery rates with efficient management of cases." : 
-                    "challenges in recovery rates requiring additional healthcare interventions.")
+                    "shows a positive trend in recovery rates with efficient management of cases." : 
+                    "faces challenges in recovery rates requiring additional healthcare interventions.")
                   }
                 </p>
                 <div className="flex items-center justify-between text-sm bg-white p-3 rounded-md border border-gray-200">
@@ -165,7 +189,7 @@ const ReportViewer: React.FC<ReportViewerProps> = ({ isOpen, onClose, report }) 
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {report.data.hospitals?.map((hospital: any) => (
+                    {report.data.hospitals?.slice(0, 10).map((hospital: any) => (
                       <TableRow key={hospital.id}>
                         <TableCell className="font-medium">{hospital.name}</TableCell>
                         <TableCell>{hospital.type}</TableCell>
@@ -179,6 +203,12 @@ const ReportViewer: React.FC<ReportViewerProps> = ({ isOpen, onClose, report }) 
                     ))}
                   </TableBody>
                 </Table>
+                
+                {report.data.hospitals && report.data.hospitals.length > 10 && (
+                  <p className="text-xs text-gray-500 mt-2 text-right">
+                    Showing 10 of {report.data.hospitals.length} hospitals
+                  </p>
+                )}
                 
                 <div className="mt-6">
                   <h4 className="text-md font-medium text-gray-900 mb-3">Healthcare Personnel Distribution</h4>
@@ -273,6 +303,30 @@ const ReportViewer: React.FC<ReportViewerProps> = ({ isOpen, onClose, report }) 
                 </div>
               </div>
             </TabsContent>
+            
+            <TabsContent value="3d" className="space-y-4">
+              <div className="bg-gray-50 p-6 rounded-lg border border-gray-100">
+                <h3 className="text-lg font-medium text-gray-900 mb-4">3D Health Metrics Visualization</h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  This interactive 3D visualization represents health metrics across {report.type === "State" ? "districts" : "this district"}. 
+                  Click and drag to rotate the view, and use the scroll wheel to zoom in/out.
+                </p>
+                
+                <div className="bg-white rounded-lg border border-gray-200 p-2">
+                  <ReportVisualization3D data={prepare3DData()} height={400} />
+                </div>
+                
+                <div className="mt-4 p-3 bg-blue-50 border border-blue-100 rounded-md">
+                  <h4 className="text-sm font-medium text-blue-800">How to interpret this visualization</h4>
+                  <ul className="mt-2 space-y-1 text-xs text-blue-700">
+                    <li>• Red bars represent total cases</li>
+                    <li>• Green bars represent recovered cases</li>
+                    <li>• Yellow bars represent active cases</li>
+                    <li>• Bar heights are proportional to the values they represent</li>
+                  </ul>
+                </div>
+              </div>
+            </TabsContent>
           </Tabs>
         </div>
         
@@ -283,7 +337,12 @@ const ReportViewer: React.FC<ReportViewerProps> = ({ isOpen, onClose, report }) 
               Previous Report
             </Button>
             <div className="flex items-center space-x-2">
-              <Button variant="outline" size="sm" onClick={() => setActiveTab(activeTab === "overview" ? "details" : activeTab === "details" ? "charts" : "overview")}>
+              <Button variant="outline" size="sm" onClick={() => {
+                const tabs = ["overview", "details", "charts", "3d"];
+                const currentIndex = tabs.indexOf(activeTab);
+                const nextIndex = (currentIndex + 1) % tabs.length;
+                setActiveTab(tabs[nextIndex]);
+              }}>
                 Next Section
               </Button>
               <Button onClick={handleDownloadPDF}>

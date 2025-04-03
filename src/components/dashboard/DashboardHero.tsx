@@ -1,9 +1,13 @@
 
 import React from 'react';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, FileText } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const DashboardHero: React.FC = () => {
+interface DashboardHeroProps {
+  onViewReports?: () => void;
+}
+
+const DashboardHero: React.FC<DashboardHeroProps> = ({ onViewReports }) => {
   return (
     <section className="pt-32 pb-20 px-6 md:px-10 bg-gradient-to-b from-health-50 to-white relative overflow-hidden">
       <div className="max-w-7xl mx-auto">
@@ -45,7 +49,11 @@ const DashboardHero: React.FC = () => {
               Explore Dashboard
               <ChevronRight className="ml-1 h-4 w-4" />
             </button>
-            <button className="px-5 py-3 rounded-lg bg-white text-health-600 font-medium border border-health-200 hover:bg-health-50 transition-colors">
+            <button 
+              onClick={onViewReports}
+              className="px-5 py-3 rounded-lg bg-white text-health-600 font-medium border border-health-200 hover:bg-health-50 transition-colors flex items-center"
+            >
+              <FileText className="mr-2 h-4 w-4" />
               View Reports
             </button>
           </motion.div>

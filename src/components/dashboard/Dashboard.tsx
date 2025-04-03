@@ -22,6 +22,7 @@ const Dashboard: React.FC = () => {
   const { loading, statistics, patientData, hospitalData, diseaseData, resourceData, districtData } = useHealthData();
   const [reportOpen, setReportOpen] = useState(false);
   const [selectedDistrict, setSelectedDistrict] = useState<string | null>(null);
+  const [showStateReport, setShowStateReport] = useState(false);
 
   if (loading) {
     return (
@@ -43,12 +44,66 @@ const Dashboard: React.FC = () => {
 
   const viewDistrictReport = (districtName: string) => {
     setSelectedDistrict(districtName);
+    setShowStateReport(false);
     setReportOpen(true);
+  };
+  
+  const viewStateReport = () => {
+    setSelectedDistrict(null);
+    setShowStateReport(true);
+    setReportOpen(true);
+  };
+  
+  // Generate state level report data
+  const generateStateReportData = () => {
+    const totalCases = districtData.reduce((sum, district) => sum + district.cases, 0);
+    const totalRecovered = districtData.reduce((sum, district) => sum + district.recovered, 0);
+    const totalActive = districtData.reduce((sum, district) => sum + district.active, 0);
+    const totalDeceased = districtData.reduce((sum, district) => sum + district.deceased, 0);
+    
+    const totalHospitals = hospitalData.length;
+    const totalBeds = hospitalData.reduce((sum, h) => sum + h.bedCapacity, 0);
+    const availableBeds = hospitalData.reduce((sum, h) => sum + h.availableBeds, 0);
+    const totalDoctors = hospitalData.reduce((sum, h) => sum + h.doctors, 0);
+    const availableDoctors = hospitalData.reduce((sum, h) => sum + h.availableDoctors, 0);
+    const totalStaff = hospitalData.reduce((sum, h) => sum + h.staff, 0);
+    const availableStaff = hospitalData.reduce((sum, h) => sum + h.availableStaff, 0);
+    
+    return {
+      title: "Kerala State Health Report",
+      subtitle: "Comprehensive Health Status of Kerala State",
+      date: new Date().toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      }),
+      type: "State",
+      data: {
+        cases: totalCases,
+        recovered: totalRecovered,
+        active: totalActive,
+        deceased: totalDeceased,
+        hospitals: hospitalData,
+        totalBeds,
+        availableBeds,
+        totalDoctors,
+        availableDoctors,
+        totalStaff,
+        availableStaff,
+        districts: districtData,
+        districtVisualizationData: {
+          cases: districtData.map(d => d.cases),
+          recovered: districtData.map(d => d.recovered),
+          active: districtData.map(d => d.active),
+          labels: districtData.map(d => d.name)
+        }
+      }
+    };
   };
 
   return (
     <div className="pb-16">
-      <DashboardHero />
+      <DashboardHero onViewReports={viewStateReport} />
       <StatisticsSection statistics={statistics} />
       <ChartsSection patientData={patientData} />
       <HospitalsSection hospitalData={hospitalData} districtData={districtData} />
@@ -170,22 +225,39 @@ const Dashboard: React.FC = () => {
       
       <MonitoringSection diseaseData={diseaseData} resourceData={resourceData} />
       
+      {/* State Report Button - Adding functionality to View Reports button in DashboardHero */}
+      <section className="py-8 px-6 md:px-10 bg-white border-t border-gray-100">
+        <div className="max-w-7xl mx-auto text-center">
+          <Button 
+            onClick={viewStateReport}
+            className="px-6 py-3 bg-health-600 text-white hover:bg-health-700 transition-colors rounded-lg font-medium"
+          >
+            <FileText className="h-5 w-5 mr-2" />
+            View Comprehensive State Health Report
+          </Button>
+          <p className="mt-3 text-sm text-gray-600">
+            Access detailed analytics, 3D visualizations, and comprehensive health metrics for Kerala state
+          </p>
+        </div>
+      </section>
+      
       {/* Report Viewer Dialog */}
-      {selectedDistrict && (
-        <ReportViewer 
-          isOpen={reportOpen} 
-          onClose={() => setReportOpen(false)}
-          report={
-            reportOpen && selectedDistrict 
-              ? generateReportData(
-                  selectedDistrict,
-                  districtData.find(d => d.name === selectedDistrict), 
-                  hospitalData.filter(h => h.district === selectedDistrict)
-                ) 
-              : null
-          }
-        />
-      )}
+      <ReportViewer 
+        isOpen={reportOpen} 
+        onClose={() => setReportOpen(false)}
+        report={
+          reportOpen
+            ? (showStateReport 
+                ? generateStateReportData()
+                : selectedDistrict && generateReportData(
+                    selectedDistrict,
+                    districtData.find(d => d.name === selectedDistrict), 
+                    hospitalData.filter(h => h.district === selectedDistrict)
+                  )
+              )
+            : null
+        }
+      />
     </div>
   );
 };
