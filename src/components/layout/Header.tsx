@@ -72,11 +72,6 @@ const Header: React.FC = () => {
             </Link>
           </nav>
           
-          <div className="hidden md:flex items-center gap-4">
-            <Button size="sm" variant="outline">Sign In</Button>
-            <Button size="sm">Register</Button>
-          </div>
-          
           <div className="md:hidden">
             <Button variant="ghost" size="icon" onClick={toggleMenu}>
               {isMenuOpen ? <X className="size-6" /> : <Menu className="size-6" />}
@@ -122,11 +117,6 @@ const Header: React.FC = () => {
                 Districts
               </Button>
             </Link>
-            
-            <div className="pt-4 border-t border-gray-100 flex flex-col gap-2">
-              <Button variant="outline" className="w-full justify-center">Sign In</Button>
-              <Button className="w-full justify-center">Register</Button>
-            </div>
           </div>
         </motion.div>
       )}

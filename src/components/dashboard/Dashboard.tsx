@@ -1,6 +1,6 @@
 
-import React from 'react';
-import { Activity, ChevronRight, Map, BarChart3 } from 'lucide-react';
+import React, { useState } from 'react';
+import { Activity, ChevronRight, Map, BarChart3, FileText, Download } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import StatCard from './StatCard';
@@ -14,9 +14,14 @@ import StatisticsSection from './StatisticsSection';
 import ChartsSection from './ChartsSection';
 import HospitalsSection from './HospitalsSection';
 import MonitoringSection from './MonitoringSection';
+import ReportViewer from '../reports/ReportViewer';
+import { generateReportData } from '@/utils/reportUtils';
+import { Button } from '@/components/ui/button';
 
 const Dashboard: React.FC = () => {
   const { loading, statistics, patientData, hospitalData, diseaseData, resourceData, districtData } = useHealthData();
+  const [reportOpen, setReportOpen] = useState(false);
+  const [selectedDistrict, setSelectedDistrict] = useState<string | null>(null);
 
   if (loading) {
     return (
@@ -36,6 +41,11 @@ const Dashboard: React.FC = () => {
     .sort((a, b) => b.cases - a.cases)
     .slice(0, 3);
 
+  const viewDistrictReport = (districtName: string) => {
+    setSelectedDistrict(districtName);
+    setReportOpen(true);
+  };
+
   return (
     <div className="pb-16">
       <DashboardHero />
@@ -43,7 +53,7 @@ const Dashboard: React.FC = () => {
       <ChartsSection patientData={patientData} />
       <HospitalsSection hospitalData={hospitalData} districtData={districtData} />
       
-      {/* New Districts Highlight Section */}
+      {/* Districts Highlight Section */}
       <section className="py-12 px-6 md:px-10 bg-gradient-to-b from-white to-gray-50">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
@@ -136,11 +146,21 @@ const Dashboard: React.FC = () => {
                     </div>
                   </div>
                   
-                  <Link to={`/districts`}>
-                    <button className="mt-4 w-full py-2 bg-gray-50 hover:bg-gray-100 text-sm text-gray-700 rounded-md transition-colors">
-                      View District Details
-                    </button>
-                  </Link>
+                  <div className="mt-4 flex space-x-2">
+                    <Link to="/districts" className="flex-1">
+                      <Button variant="outline" size="sm" className="w-full">
+                        View Details
+                      </Button>
+                    </Link>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="flex-1 text-health-700"
+                      onClick={() => viewDistrictReport(district.name)}
+                    >
+                      <FileText className="h-4 w-4 mr-1" /> View Report
+                    </Button>
+                  </div>
                 </motion.div>
               );
             })}
@@ -149,6 +169,23 @@ const Dashboard: React.FC = () => {
       </section>
       
       <MonitoringSection diseaseData={diseaseData} resourceData={resourceData} />
+      
+      {/* Report Viewer Dialog */}
+      {selectedDistrict && (
+        <ReportViewer 
+          isOpen={reportOpen} 
+          onClose={() => setReportOpen(false)}
+          report={
+            reportOpen && selectedDistrict 
+              ? generateReportData(
+                  selectedDistrict,
+                  districtData.find(d => d.name === selectedDistrict), 
+                  hospitalData.filter(h => h.district === selectedDistrict)
+                ) 
+              : null
+          }
+        />
+      )}
     </div>
   );
 };
