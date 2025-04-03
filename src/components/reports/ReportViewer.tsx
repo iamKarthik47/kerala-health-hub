@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { 
   FileText, Download, ChevronLeft, ChevronRight, 
@@ -10,6 +11,21 @@ import { Button } from "@/components/ui/button";
 import { downloadPDF } from '@/utils/reportUtils';
 import { toast } from "@/components/ui/use-toast";
 import ReportVisualization3D from './ReportVisualization3D';
+import {
+  BarChart as RechartsBarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  PieChart as RechartsPieChart,
+  Pie,
+  Cell,
+  LineChart,
+  Line
+} from 'recharts';
 
 interface ReportData {
   title: string;
@@ -25,12 +41,49 @@ interface ReportViewerProps {
   report: ReportData | null;
 }
 
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+
 const ReportViewer: React.FC<ReportViewerProps> = ({ isOpen, onClose, report }) => {
   const [activeTab, setActiveTab] = useState<string>("overview");
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   
   if (!report) return null;
   
+  // Prepare pie chart data for case distribution
+  const casesDistributionData = [
+    { name: 'Active', value: report.data.active || 0 },
+    { name: 'Recovered', value: report.data.recovered || 0 },
+    { name: 'Deceased', value: report.data.deceased || 0 },
+  ].filter(item => item.value > 0);
+
+  // Prepare data for hospital resources bar chart
+  const hospitalResourcesData = [
+    { name: 'Total Beds', total: report.data.totalBeds || 0, available: report.data.availableBeds || 0 },
+    { name: 'Doctors', total: report.data.totalDoctors || 0, available: report.data.availableDoctors || 0 },
+    { name: 'Staff', total: report.data.totalStaff || 0, available: report.data.availableStaff || 0 },
+  ];
+
+  // Prepare data for trend line chart (creating mock timeline data based on current values)
+  const createTrendData = () => {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+    const currentCases = report.data.cases || 100;
+    const currentActive = report.data.active || 20;
+    const factor = currentCases / 100; // Scaling factor
+    
+    return months.map((month, index) => {
+      // Create a progression where earlier months had more cases and fewer recoveries
+      const monthFactor = (index + 1) / months.length;
+      return {
+        name: month,
+        cases: Math.round(currentCases * (0.7 + 0.3 * monthFactor)),
+        active: Math.round(currentActive * (1.5 - 0.5 * monthFactor)),
+        recovered: Math.round((currentCases * (0.7 + 0.3 * monthFactor) - currentActive * (1.5 - 0.5 * monthFactor)) * monthFactor)
+      };
+    });
+  };
+  
+  const trendData = createTrendData();
+
   const handleDownloadPDF = async () => {
     try {
       setIsGeneratingPDF(true);
@@ -320,24 +373,105 @@ const ReportViewer: React.FC<ReportViewerProps> = ({ isOpen, onClose, report }) 
               <div className="bg-gray-50 p-6 rounded-lg border border-gray-100">
                 <h3 className="text-lg font-medium text-gray-900 mb-4">Visual Analytics</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="bg-white p-4 rounded-md border border-gray-200 flex items-center justify-center">
-                    <div className="text-center">
-                      <BarChart className="h-10 w-10 mx-auto text-health-500 mb-2" />
-                      <p className="text-sm text-gray-500">
-                        Case Distribution Chart would render here.
-                        The chart would show case distribution by categories.
-                      </p>
+                  {/* Case Distribution Pie Chart */}
+                  <div className="bg-white p-4 rounded-md border border-gray-200">
+                    <h4 className="text-md font-medium text-gray-900 mb-3">Case Distribution</h4>
+                    <div className="h-64">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <RechartsPieChart>
+                          <Pie
+                            data={casesDistributionData}
+                            cx="50%"
+                            cy="50%"
+                            labelLine={false}
+                            outerRadius={80}
+                            fill="#8884d8"
+                            dataKey="value"
+                            label={({ name, percent }) => 
+                              `${name}: ${(percent * 100).toFixed(1)}%`
+                            }
+                          >
+                            {casesDistributionData.map((entry, index) => (
+                              <Cell 
+                                key={`cell-${index}`} 
+                                fill={
+                                  entry.name === 'Active' ? '#FFBB28' : 
+                                  entry.name === 'Recovered' ? '#00C49F' : 
+                                  '#FF8042'
+                                } 
+                              />
+                            ))}
+                          </Pie>
+                          <Tooltip formatter={(value) => [value, 'Cases']} />
+                          <Legend />
+                        </RechartsPieChart>
+                      </ResponsiveContainer>
                     </div>
                   </div>
                   
-                  <div className="bg-white p-4 rounded-md border border-gray-200 flex items-center justify-center">
-                    <div className="text-center">
-                      <PieChart className="h-10 w-10 mx-auto text-health-500 mb-2" />
-                      <p className="text-sm text-gray-500">
-                        Recovery Rate Pie Chart would render here.
-                        The chart would show recovery percentage vs active cases.
-                      </p>
+                  {/* Hospital Resources Bar Chart */}
+                  <div className="bg-white p-4 rounded-md border border-gray-200">
+                    <h4 className="text-md font-medium text-gray-900 mb-3">Hospital Resources</h4>
+                    <div className="h-64">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <RechartsBarChart
+                          data={hospitalResourcesData}
+                          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                          <XAxis dataKey="name" />
+                          <YAxis />
+                          <Tooltip />
+                          <Legend />
+                          <Bar dataKey="total" name="Total" fill="#8884d8" />
+                          <Bar dataKey="available" name="Available" fill="#82ca9d" />
+                        </RechartsBarChart>
+                      </ResponsiveContainer>
                     </div>
+                  </div>
+                  
+                  {/* Trend Line Chart - Full width */}
+                  <div className="bg-white p-4 rounded-md border border-gray-200 col-span-1 md:col-span-2">
+                    <h4 className="text-md font-medium text-gray-900 mb-3">6-Month Trend Analysis</h4>
+                    <div className="h-64">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart
+                          data={trendData}
+                          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                          <XAxis dataKey="name" />
+                          <YAxis />
+                          <Tooltip />
+                          <Legend />
+                          <Line 
+                            type="monotone" 
+                            dataKey="cases" 
+                            name="Total Cases" 
+                            stroke="#8884d8" 
+                            strokeWidth={2} 
+                            activeDot={{ r: 8 }}
+                          />
+                          <Line 
+                            type="monotone" 
+                            dataKey="active" 
+                            name="Active Cases" 
+                            stroke="#FFBB28" 
+                            strokeWidth={2} 
+                          />
+                          <Line 
+                            type="monotone" 
+                            dataKey="recovered" 
+                            name="Recovered" 
+                            stroke="#00C49F" 
+                            strokeWidth={2} 
+                          />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-2">
+                      Note: Trend data is approximated based on current values for demonstration purposes.
+                    </p>
                   </div>
                 </div>
               </div>
