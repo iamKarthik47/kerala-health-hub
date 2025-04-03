@@ -1,15 +1,13 @@
-
 import React, { useState } from 'react';
 import { 
   FileText, Download, ChevronLeft, ChevronRight, 
-  Printer, FilePdf, Share2, Eye, BarChart, PieChart
+  Printer, File, Share2, Eye, BarChart, PieChart
 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
+import { downloadPDF } from '@/utils/reportUtils';
 
 interface ReportData {
   title: string;
@@ -30,29 +28,8 @@ const ReportViewer: React.FC<ReportViewerProps> = ({ isOpen, onClose, report }) 
   
   if (!report) return null;
   
-  const downloadPDF = async () => {
-    const reportElement = document.getElementById('report-to-download');
-    if (!reportElement) return;
-    
-    const canvas = await html2canvas(reportElement, {
-      scale: 2,
-      logging: false,
-      useCORS: true,
-      allowTaint: true,
-    });
-    
-    const imgData = canvas.toDataURL('image/png');
-    const pdf = new jsPDF({
-      orientation: 'portrait',
-      unit: 'mm',
-      format: 'a4',
-    });
-    
-    const imgWidth = 210;
-    const imgHeight = canvas.height * imgWidth / canvas.width;
-    
-    pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-    pdf.save(`${report.title.replace(/\s+/g, '_')}_report.pdf`);
+  const handleDownloadPDF = () => {
+    downloadPDF('report-to-download', `${report.title.replace(/\s+/g, '_')}_report`);
   };
 
   const printReport = () => {
@@ -70,8 +47,8 @@ const ReportViewer: React.FC<ReportViewerProps> = ({ isOpen, onClose, report }) 
                 <Printer className="h-4 w-4 mr-1" />
                 Print
               </Button>
-              <Button variant="outline" size="sm" onClick={downloadPDF}>
-                <FilePdf className="h-4 w-4 mr-1" />
+              <Button variant="outline" size="sm" onClick={handleDownloadPDF}>
+                <File className="h-4 w-4 mr-1" />
                 PDF
               </Button>
               <Button variant="ghost" size="sm" onClick={onClose}>
@@ -309,7 +286,7 @@ const ReportViewer: React.FC<ReportViewerProps> = ({ isOpen, onClose, report }) 
               <Button variant="outline" size="sm" onClick={() => setActiveTab(activeTab === "overview" ? "details" : activeTab === "details" ? "charts" : "overview")}>
                 Next Section
               </Button>
-              <Button onClick={downloadPDF}>
+              <Button onClick={handleDownloadPDF}>
                 <Download className="h-4 w-4 mr-1" />
                 Download Report
               </Button>

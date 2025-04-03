@@ -17,6 +17,17 @@ interface HospitalData {
   district: string;
   bedCapacity: number;
   availableBeds: number;
+  type: string;
+  location: string;
+  occupancyRate: number;
+  patientCount: number;
+  status: "operational" | "partial" | "critical";
+  doctors: number;
+  availableDoctors: number;
+  staff: number;
+  availableStaff: number;
+  facilities: string[];
+  specialties: string[];
   [key: string]: any;
 }
 
